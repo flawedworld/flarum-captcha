@@ -81,7 +81,11 @@ php flarum migrate
 php flarum cache:clear
 ```
 
-The SHA-256 hash of each release tarball is listed on the [releases page](https://github.com/flawedworld/flarum-captcha/releases).
+To get the SHA-256 hash of a release tarball:
+
+```bash
+curl -L https://github.com/flawedworld/flarum-captcha/releases/download/vX.X.X/grapheneos-flarum-captcha-vX.X.X.tar.gz | sha256sum
+```
 
 ## Configuration
 
