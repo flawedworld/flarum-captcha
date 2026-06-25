@@ -10,6 +10,10 @@ grapheneos-captcha:
     image_error: "Failed to load captcha image. Please reload."
     pow_error: "Security check failed. Please reload the captcha and try again."
 
+  api:
+    captcha_invalid: "The captcha answer is incorrect or has expired."
+    pow_invalid: "The proof-of-work challenge had not finished solving. Please wait for it to complete before submitting."
+
   admin:
     settings:
       enabled_label: "Enable captcha"

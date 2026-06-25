@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ValidateCaptchaMiddleware implements MiddlewareInterface
 {
@@ -18,7 +19,8 @@ class ValidateCaptchaMiddleware implements MiddlewareInterface
 
     public function __construct(
         private readonly CaptchaStore                $store,
-        private readonly SettingsRepositoryInterface $settings
+        private readonly SettingsRepositoryInterface $settings,
+        private readonly TranslatorInterface         $translator
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -54,14 +56,14 @@ class ValidateCaptchaMiddleware implements MiddlewareInterface
         if (!$captchaToken || !ctype_xdigit($captchaToken) || strlen($captchaToken) !== CaptchaStore::TOKEN_LENGTH
             || strlen($captchaAnswer) > self::CAPTCHA_LENGTH
             || !$this->store->verifyCaptcha($captchaToken, $captchaAnswer)) {
-            return $this->reject('captcha_invalid', 'The captcha answer is incorrect or has expired.');
+            return $this->reject('captcha_invalid', $this->translator->trans('grapheneos-captcha.api.captcha_invalid'));
         }
 
         if ($this->settings->get('grapheneos-captcha.powEnabled', true)) {
             $powSolution = $body['pow_solution'] ?? '';
 
             if (!$this->store->verifyPow($captchaToken, $powSolution)) {
-                return $this->reject('pow_invalid', 'The proof-of-work challenge had not finished solving. Please wait for it to complete before submitting.');
+                return $this->reject('pow_invalid', $this->translator->trans('grapheneos-captcha.api.pow_invalid'));
             }
         }
 
