@@ -28,9 +28,7 @@ jobs:
 
       - name: Build release archive
         run: |
-          TAG="${GITHUB_REF_NAME}"
-          # Include everything Composer needs: PHP src, JS dist, locale, less, metadata
-          tar -czf "grapheneos-flarum-captcha-${TAG}.tar.gz" \
+          tar -czf "/tmp/grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" \
             --exclude='.git' \
             --exclude='js/node_modules' \
             --exclude='js/src' \
@@ -38,6 +36,7 @@ jobs:
             --exclude='js/package*.json' \
             --exclude='js/webpack.config.js' \
             .
+          mv "/tmp/grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" .
 
       - name: Create GitHub Release
         env:
