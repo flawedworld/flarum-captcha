@@ -1,7 +1,8 @@
 import app from 'flarum/admin/app';
 
 export default function () {
-  app.extensionData
+  app.initializers.add('grapheneos-captcha', () => {
+    app.extensionData
     .for('grapheneos-captcha')
     .registerSetting({
       setting: 'grapheneos-captcha.enabled',
@@ -32,4 +33,5 @@ export default function () {
       max:         28,
       placeholder: '20',
     });
+  });
 }
