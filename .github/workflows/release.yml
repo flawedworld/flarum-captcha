@@ -28,6 +28,15 @@ jobs:
         working-directory: js
         run: yarn build
 
+      - name: Stamp version into composer.json
+        run: |
+          python3 -c "
+          import json
+          with open('composer.json') as f: c = json.load(f)
+          c['version'] = '${GITHUB_REF_NAME#v}'
+          with open('composer.json', 'w') as f: json.dump(c, f, indent=4)
+          "
+
       - name: Build release archive
         run: |
           tar -czf "/tmp/grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" \
