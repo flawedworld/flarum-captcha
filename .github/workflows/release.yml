@@ -43,8 +43,8 @@ jobs:
             --exclude='.git' \
             --exclude='js/node_modules' \
             --exclude='js/src' \
-            --exclude='js/*.js' \
-            --exclude='js/package*.json' \
+            --exclude='js/package.json' \
+            --exclude='js/package-lock.json' \
             --exclude='js/webpack.config.js' \
             .
           mv "/tmp/grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" .
