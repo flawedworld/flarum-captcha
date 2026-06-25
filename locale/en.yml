@@ -1,0 +1,20 @@
+grapheneos-captcha:
+  forum:
+    captcha_label: "Enter the text shown in the image"
+    image_alt: "Captcha image — enter the characters you see into the field below"
+    reload_label: "Reload captcha image"
+    reload_short: "Can't read it? Try another"
+    input_placeholder: "Type the characters above"
+    pow_working: "Solving a proof-of-work challenge — please wait before submitting. This may take a few seconds."
+    pow_blocked: "Please wait — the security check hasn't finished yet. Try submitting again once it completes."
+    image_error: "Failed to load captcha image. Please reload."
+    pow_error: "Security check failed. Please reload the captcha and try again."
+
+  admin:
+    settings:
+      enabled_label: "Enable captcha"
+      login_label: "Require captcha on login"
+      register_label: "Require captcha on registration"
+      pow_label: "Enable proof-of-work (client-side rate limiting)"
+      pow_difficulty_label: "Proof-of-work difficulty (leading zero bits)"
+      pow_difficulty_help: "Higher values require more CPU work from the client (14-28). 20 is recommended."

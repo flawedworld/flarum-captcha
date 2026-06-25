@@ -1,0 +1,25 @@
+{
+    "name": "grapheneos/flarum-captcha",
+    "description": "Self-hosted image captcha with proof-of-work for Flarum login and registration.",
+    "type": "flarum-extension",
+    "license": "MIT",
+    "require": {
+        "flarum/core": "^1.5 || ^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "GrapheneOS\\Captcha\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "GrapheneOS Captcha",
+            "category": "security",
+            "icon": {
+                "name": "fas fa-shield-alt",
+                "backgroundColor": "#1a1a1a",
+                "color": "#ffffff"
+            }
+        }
+    }
+}
