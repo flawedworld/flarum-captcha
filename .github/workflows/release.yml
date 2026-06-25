@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write
+  id-token: write
+  attestations: write
 
 jobs:
   release:
@@ -37,6 +39,13 @@ jobs:
             --exclude='js/webpack.config.js' \
             .
           mv "/tmp/grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" .
+
+      - name: Attest release archive
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh attestation attest "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" \
+            --repo "${GITHUB_REPOSITORY}"
 
       - name: Create GitHub Release
         env:
