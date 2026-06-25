@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh repo clone "${GITHUB_REPOSITORY}" . -- --depth 1 --branch "${GITHUB_REF_NAME}"
+
+      - name: Install JS dependencies
+        working-directory: js
+        run: yarn install --frozen-lockfile --ignore-scripts
+
+      - name: Build JS
+        working-directory: js
+        run: yarn build
+
+      - name: Build release archive
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          # Include everything Composer needs: PHP src, JS dist, locale, less, metadata
+          tar -czf "grapheneos-flarum-captcha-${TAG}.tar.gz" \
+            --exclude='.git' \
+            --exclude='js/node_modules' \
+            --exclude='js/src' \
+            --exclude='js/*.js' \
+            --exclude='js/package*.json' \
+            --exclude='js/webpack.config.js' \
+            .
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes \
+            "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz"
