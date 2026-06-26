@@ -17,7 +17,7 @@ A self-hosted image captcha with proof-of-work (PoW) for Flarum login and regist
 
 ## Installation
 
-This package is distributed as a GitHub release asset rather than via Packagist. Install it by adding a `package` repository entry to your Flarum's `composer.json` that pins the exact version and SHA-256 hash of the release tarball.
+This package is distributed as a GitHub release asset rather than via Packagist. Install it by adding a `package` repository entry to your Flarum's `composer.json` that pins the exact version and SHA-1 hash of the release tarball. (Composer's `shasum` field requires SHA-1; use the `.sha256` release asset and `gh attestation verify` for stronger integrity verification.)
 
 **1. Add the repository and requirement to `composer.json`:**
 
@@ -33,7 +33,7 @@ This package is distributed as a GitHub release asset rather than via Packagist.
                 "dist": {
                     "url": "https://github.com/flawedworld/flarum-captcha/releases/download/v0.0.10/grapheneos-flarum-captcha-v0.0.10.tar.gz",
                     "type": "tar",
-                    "shasum": "d8a13a4a040c288a6bc6613118e2b209a0895faa20c69c3c9e45d3397c32e206"
+                    "shasum": "9579fb355c376c3c640e2a4a853084d1e95b70fb"
                 },
                 "require": {
                     "flarum/core": "^1.5 || ^2.0"
@@ -81,10 +81,12 @@ php flarum migrate
 php flarum cache:clear
 ```
 
-To get the SHA-256 hash of a release tarball:
+The SHA-1 and SHA-256 checksums for each release are published as `.sha1` and `.sha256` assets on the [releases page](https://github.com/flawedworld/flarum-captcha/releases). You can also compute them locally:
 
 ```bash
-curl -L https://github.com/flawedworld/flarum-captcha/releases/download/vX.X.X/grapheneos-flarum-captcha-vX.X.X.tar.gz | sha256sum
+curl -L https://github.com/flawedworld/flarum-captcha/releases/download/vX.X.X/grapheneos-flarum-captcha-vX.X.X.tar.gz -o captcha.tar.gz
+sha1sum   captcha.tar.gz   # use in composer.json shasum field
+sha256sum captcha.tar.gz   # cross-check against the .sha256 release asset
 ```
 
 ## Configuration

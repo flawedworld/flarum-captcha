@@ -39,26 +39,44 @@ jobs:
 
       - name: Build release archive
         run: |
-          tar -czf "/tmp/grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" \
-            --exclude='.git' \
-            --exclude='js/node_modules' \
-            --exclude='js/src' \
-            --exclude='js/package.json' \
-            --exclude='js/package-lock.json' \
-            --exclude='js/webpack.config.js' \
-            .
-          mv "/tmp/grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" .
+          REPO_DIR=$(basename "${GITHUB_WORKSPACE}")
+          cd ..
+          tar -czf "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" \
+            --exclude="${REPO_DIR}/.git" \
+            --exclude="${REPO_DIR}/js/node_modules" \
+            --exclude="${REPO_DIR}/js/src" \
+            --exclude="${REPO_DIR}/js/package.json" \
+            --exclude="${REPO_DIR}/js/package-lock.json" \
+            --exclude="${REPO_DIR}/js/webpack.config.js" \
+            "${REPO_DIR}"
+          mv "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" "${REPO_DIR}/"
 
       - name: Attest release archive
         uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2
         with:
           subject-path: "grapheneos-flarum-captcha-${{ github.ref_name }}.tar.gz"
 
+      - name: Compute checksums
+        run: |
+          sha1sum   "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" > "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.sha1"
+          sha256sum "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" > "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.sha256"
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          SHA1=$(cut -d' ' -f1 "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.sha1")
+          SHA256=$(cut -d' ' -f1 "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.sha256")
           gh release create "${GITHUB_REF_NAME}" \
             --title "${GITHUB_REF_NAME}" \
-            --generate-notes \
-            "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz"
+            --notes "## Checksums
+
+| Algorithm | Hash |
+|-----------|------|
+| SHA-1 | \`${SHA1}\` |
+| SHA-256 | \`${SHA256}\` |
+
+SHA-1 is used in the Composer \`shasum\` field. SHA-256 is provided for independent verification alongside the Sigstore provenance attestation." \
+            "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.tar.gz" \
+            "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.sha1" \
+            "grapheneos-flarum-captcha-${GITHUB_REF_NAME}.sha256"
